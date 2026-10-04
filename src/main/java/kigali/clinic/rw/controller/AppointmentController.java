@@ -15,14 +15,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kigali.clinic.rw.domain.Appointment;
 import kigali.clinic.rw.domain.AppointmentDTO;
+import kigali.clinic.rw.domain.AppointmentStatus;
 import kigali.clinic.rw.service.AppointmentService;
 
 @RestController 
-@RequestMapping (value = "/api/appointment")
+@RequestMapping (value = "/api/appointments")
 public class AppointmentController {
     
     @Autowired 
@@ -75,4 +77,13 @@ public class AppointmentController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @GetMapping (value = "/by-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> searchByStatus(@RequestParam("status") AppointmentStatus status) {
+
+      List<Appointment> appointments = appoService.searchByStatus(status);
+
+      return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
+    
 }

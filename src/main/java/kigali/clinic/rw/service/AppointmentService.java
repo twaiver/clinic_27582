@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import kigali.clinic.rw.domain.Appointment;
 import kigali.clinic.rw.domain.AppointmentDTO;
 import kigali.clinic.rw.domain.AppointmentStatus;
+import kigali.clinic.rw.domain.Patient;
 import kigali.clinic.rw.repository.AppointmentRepository;
 
 @Service 
@@ -118,5 +119,12 @@ public class AppointmentService {
 
         return ne;
     }
+
+    public List<Appointment> searchByStatus(AppointmentStatus status) {
+
+      List<Appointment> appointments = appRepo.findByStatusOrderByAppointmentDateAsc(status);
+
+      return appointments;
+   }
 
 }
