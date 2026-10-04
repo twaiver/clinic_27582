@@ -1,0 +1,78 @@
+package kigali.clinic.rw.controller;
+
+
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import kigali.clinic.rw.domain.Appointment;
+import kigali.clinic.rw.domain.AppointmentDTO;
+import kigali.clinic.rw.service.AppointmentService;
+
+@RestController 
+@RequestMapping (value = "/api/appointment")
+public class AppointmentController {
+    
+    @Autowired 
+    private AppointmentService appoService;
+
+    @PostMapping(value = "/save", consumes = MediaType.APPLICATION_JSON_VALUE, 
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> saveAppointment(@RequestBody Appointment appointment) {
+
+        String result = appoService.saveAppointment(appointment);
+        
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @PutMapping (value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, 
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateAppointment(@PathVariable UUID id,@RequestBody  Appointment appointment) {
+        String result = appoService.updateAppointment(appointment, id);
+
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping (value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteAppointment(@PathVariable UUID id) {
+        String result = appoService.deleteAppointment(id);
+
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @GetMapping (value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getAllAppointment() {
+
+        List<Appointment> result = appoService.allAppointments();
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping (value = "/pending/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getAllPendingAppointment(@PathVariable UUID id) {
+        
+        List<Appointment> result = appoService.allPendingAppointment(id);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping (value = "/expired", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getAllExpiredAppointment() {
+        
+        List<AppointmentDTO> result = appoService.allExpiredAppointment();
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+}
