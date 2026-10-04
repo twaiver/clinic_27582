@@ -88,4 +88,12 @@ public class PatientService {
 
    }
 
+
+   public List<Patient> searchByLastName(String lastName) {
+
+      List<Patient> patients = patientRepo.findByLastNameIgnoreCaseOrderByFirstNameAsc(lastName);
+
+      return patients;
+   }
+
 }
