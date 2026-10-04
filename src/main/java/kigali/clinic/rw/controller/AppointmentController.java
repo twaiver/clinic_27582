@@ -1,6 +1,5 @@
 package kigali.clinic.rw.controller;
 
-
 import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
@@ -24,38 +23,40 @@ import kigali.clinic.rw.domain.AppointmentDTO;
 import kigali.clinic.rw.domain.AppointmentStatus;
 import kigali.clinic.rw.service.AppointmentService;
 
-@RestController 
-@RequestMapping (value = "/api/appointments")
+@RestController
+@RequestMapping(value = "/api/appointments")
 public class AppointmentController {
-    
-    @Autowired 
+
+    @Autowired
     private AppointmentService appoService;
 
-    @PostMapping(value = "/save", consumes = MediaType.APPLICATION_JSON_VALUE, 
-    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveAppointment(@RequestBody Appointment appointment) {
 
         String result = appoService.saveAppointment(appointment);
-        
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+
+        if (result.equals("The appointment saved successfully")) {
+            return new ResponseEntity<>(result, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(result, HttpStatus.CONFLICT);
+        }
     }
 
-    @PutMapping (value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, 
-    produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateAppointment(@PathVariable UUID id,@RequestBody  Appointment appointment) {
+    @PutMapping(value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateAppointment(@PathVariable UUID id, @RequestBody Appointment appointment) {
         String result = appoService.updateAppointment(appointment, id);
 
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    @DeleteMapping (value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteAppointment(@PathVariable UUID id) {
         String result = appoService.deleteAppointment(id);
 
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    @GetMapping (value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAllAppointment() {
 
         List<Appointment> result = appoService.allAppointments();
@@ -63,37 +64,36 @@ public class AppointmentController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping (value = "/pending/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/pending/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAllPendingAppointment(@PathVariable UUID id) {
-        
+
         List<Appointment> result = appoService.allPendingAppointment(id);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping (value = "/expired", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/expired", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAllExpiredAppointment() {
-        
+
         List<AppointmentDTO> result = appoService.allExpiredAppointment();
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping (value = "/by-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/by-status", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> searchByStatus(@RequestParam("status") AppointmentStatus status) {
 
-      List<Appointment> appointments = appoService.searchByStatus(status);
+        List<Appointment> appointments = appoService.searchByStatus(status);
 
-      return new ResponseEntity<>(appointments, HttpStatus.OK);
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 
-
-    @GetMapping (value = "/between", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/between", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> searchByRange(@RequestParam("start") Date start, @RequestParam("end") Date end) {
 
-      List<Appointment> appointments = appoService.searchByRange(start, end);
+        List<Appointment> appointments = appoService.searchByRange(start, end);
 
-      return new ResponseEntity<>(appointments, HttpStatus.OK);
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
-    
+
 }

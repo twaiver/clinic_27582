@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import kigali.clinic.rw.domain.Appointment;
 import kigali.clinic.rw.domain.AppointmentDTO;
 import kigali.clinic.rw.domain.AppointmentStatus;
-import kigali.clinic.rw.domain.Patient;
 import kigali.clinic.rw.repository.AppointmentRepository;
 
 @Service 
@@ -24,21 +23,22 @@ public class AppointmentService {
 
     public String saveAppointment(Appointment appointment) {
 
-        try {
 
-            Appointment result = appRepo.findByDoctorAndPatient(appointment.getDoctor(), appointment.getPatient());
+        AppointmentStatus sendThis = AppointmentStatus.CANCELLED;
 
-            if(result == null) {
+            
+
+            boolean result = appRepo.existsByDoctorAndStatusNotAndAppointmentDate(appointment.getDoctor(), sendThis, appointment.getAppointmentDate());
+
+            if(!result) {
 
             appRepo.save(appointment);
             return "The appointment saved successfully";
 
             } else {
-                return "The appointment is already exist";
+                return "Doctor is already booked on that date";
             }
-        } catch (Exception e) {
-            return "The appointment failed to save";
-        }
+        
     }
 
     public String updateAppointment(Appointment appointment, UUID id) {

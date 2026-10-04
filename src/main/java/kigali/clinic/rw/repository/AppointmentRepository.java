@@ -23,5 +23,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Appointment> findByAppointmentDateBetween(Date start, Date end);
 
     Appointment findByDoctorAndPatient(Doctor doctor, Patient patient);
+
+
+    boolean existsByDoctorAndStatusNotAndAppointmentDate(Doctor doctor, AppointmentStatus status, Date appointmentDate);
     
 }
