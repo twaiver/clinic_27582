@@ -127,4 +127,11 @@ public class AppointmentService {
       return appointments;
    }
 
+   public List<Appointment> searchByRange(Date start, Date end) {
+
+      List<Appointment> appointments = appRepo.findByAppointmentDateBetween(start, end);
+
+      return appointments;
+   }
+
 }

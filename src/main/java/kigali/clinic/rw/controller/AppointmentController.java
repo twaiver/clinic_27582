@@ -1,6 +1,7 @@
 package kigali.clinic.rw.controller;
 
 
+import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -82,6 +83,15 @@ public class AppointmentController {
     public ResponseEntity<?> searchByStatus(@RequestParam("status") AppointmentStatus status) {
 
       List<Appointment> appointments = appoService.searchByStatus(status);
+
+      return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
+
+
+    @GetMapping (value = "/between", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> searchByRange(@RequestParam("start") Date start, @RequestParam("end") Date end) {
+
+      List<Appointment> appointments = appoService.searchByRange(start, end);
 
       return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
