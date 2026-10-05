@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -117,6 +118,14 @@ public class AppointmentController {
     public ResponseEntity<?> cancelAppointment(@RequestParam ("date") Date appDate) {
 
         int result = appoService.deleteAppointment(appDate);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/page", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getPaging(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam ("sort") String sort) {
+
+        Page<Appointment> result = appoService.getPaging(page, size, sort);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

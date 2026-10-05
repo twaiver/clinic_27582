@@ -1,0 +1,165 @@
+{
+  "info": {
+    "_postman_id": "ea853d26-d07f-45e4-95e2-fe36c99524e0",
+    "name": "WebTech",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56771903",
+    "_collection_link": "https://go.postman.co/collection/56771903-ea853d26-d07f-45e4-95e2-fe36c99524e0?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get Data",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/appointments/page?page=0&size=1&sort=appointmentDate",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "appointments",
+            "page"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "1"
+            },
+            {
+              "key": "sort",
+              "value": "appointmentDate"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Post Data",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": " {\n        \"appointmentDate\": \"2026-10-25T22:00:00.000Z\",\n        \"doctor\": {\n            \"id\": \"cbcc91f1-4cad-413a-8e3f-6b03a4a03945\"\n        },\n        \"patient\": {\n            \"id\": \"8a94784f-f33e-43cf-932c-059a06ea2c4e\"\n        },\n        \"reason\": \"Leg match\",\n        \"status\": \"SCHEDULED\"\n    }\n    ",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/appointments/save",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "appointments",
+            "save"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Data",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/appointments/cancelled-before?date=2026-10-11",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "appointments",
+            "cancelled-before"
+          ],
+          "query": [
+            {
+              "key": "date",
+              "value": "2026-10-11"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Data",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Cardiology\",\n    \"doctors\" : [\n        {\n            \"id\" : \"0b8d832e-1246-4614-bf66-54b0c0df631e\"\n        }\n    ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/specialization/update/a5c1bc2d-fba5-47b1-b7d2-c7724b736998",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "specialization",
+            "update",
+            "a5c1bc2d-fba5-47b1-b7d2-c7724b736998"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Patch Data",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/appointments/cancel-day?doctorId=0b8d832e-1246-4614-bf66-54b0c0df631e&date=2026-10-10",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "appointments",
+            "cancel-day"
+          ],
+          "query": [
+            {
+              "key": "doctorId",
+              "value": "0b8d832e-1246-4614-bf66-54b0c0df631e"
+            },
+            {
+              "key": "date",
+              "value": "2026-10-10"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

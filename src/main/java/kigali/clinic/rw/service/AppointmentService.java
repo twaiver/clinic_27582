@@ -7,7 +7,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import kigali.clinic.rw.domain.Appointment;
@@ -147,6 +152,16 @@ public class AppointmentService {
     Doctor doc = new Doctor();
     doc.setId(doctorId);
     int result = appRepo.cancelAppointments(doc, appDate, AppointmentStatus.CANCELLED, AppointmentStatus.COMPLETED);
+
+    return result;
+   }
+
+   public Page<Appointment> getPaging(int page, int size, String sort) {
+
+    Pageable sendThis = PageRequest.of(page, size, Sort.by(sort).descending());
+
+    
+    Page<Appointment> result = appRepo.findAll(sendThis);
 
     return result;
    }

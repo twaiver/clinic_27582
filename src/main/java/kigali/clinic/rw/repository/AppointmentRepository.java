@@ -39,6 +39,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     @Query (value = "UPDATE Appointment a SET a.status = :stat WHERE a.doctor = :doctor AND NOT a.status  = :notIn AND a.appointmentDate = :appointDate")
     int cancelAppointments(@Param("doctor") Doctor doctor, @Param("appointDate") Date appDate, @Param("stat") AppointmentStatus status, @Param("notIn") AppointmentStatus notIn);
 
+
     @Modifying 
     @Transactional 
     @Query (value = "DELETE FROM Appointment a WHERE a.status = 'CANCELLED' AND a.appointmentDate < :appointDate")
