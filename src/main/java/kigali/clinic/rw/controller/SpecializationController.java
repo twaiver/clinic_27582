@@ -20,7 +20,7 @@ import kigali.clinic.rw.domain.Specialization;
 import kigali.clinic.rw.service.SpecializationService;
 
 @RestController 
-@RequestMapping (value = "/api/specialization")
+@RequestMapping (value = "/api/specializations")
 public class SpecializationController {
     
     @Autowired 
@@ -34,7 +34,7 @@ public class SpecializationController {
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    @GetMapping (value = "/all")
+    @GetMapping (value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAllSpecialization() {
 
         List<Specialization> result = specialService.getAllSpecialization();
@@ -54,6 +54,14 @@ public class SpecializationController {
     public ResponseEntity<?> deleteSpecialization(@PathVariable UUID id) {
 
         String result = specialService.deleteSpecialization(id);
+
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @GetMapping (value = "/unused", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getAllSpecializationNobodyOffer() {
+
+        List<Specialization> result = specialService.getAllSpecializationNobodyOffer();
 
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }

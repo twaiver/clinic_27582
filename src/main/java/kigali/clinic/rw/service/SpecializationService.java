@@ -62,4 +62,11 @@ public class SpecializationService {
 
         return result;
     }
+
+    public List<Specialization> getAllSpecializationNobodyOffer() {
+
+        List<Specialization> result = specializationRepo.findByNobodyOffer();
+
+        return result;
+    }
 }
