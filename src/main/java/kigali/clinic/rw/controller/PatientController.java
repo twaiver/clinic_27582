@@ -93,6 +93,12 @@ public class PatientController {
       List<Patient> patients = patientService.searchByDoctor(doctorId);
 
 
+      if(!patients.isEmpty()) {
+
       return new ResponseEntity<>(patients, HttpStatus.OK);
+
+      } else {
+        return new ResponseEntity<>("The doctor with that id does not exist", HttpStatus.NOT_FOUND);
+      }
     }
 }
