@@ -96,4 +96,12 @@ public class AppointmentController {
         return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/stats/by-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> appointmentPerStatus() {
+
+        List<Object> appointments = appoService.appointmentsPerStatus();
+
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
+
 }

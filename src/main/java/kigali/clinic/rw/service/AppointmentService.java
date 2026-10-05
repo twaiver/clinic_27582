@@ -134,4 +134,11 @@ public class AppointmentService {
       return appointments;
    }
 
+   public List<Object> appointmentsPerStatus() {
+
+      List<Object> appointments = appRepo.appointmentsPerStatus();
+
+      return appointments;
+   }
+
 }
