@@ -97,4 +97,11 @@ public class DoctorService {
       return result;
    }
 
+   public List<Doctor> searchByNoOffice() {
+
+      List<Doctor> result = doctorRepo.findByNoOffice();
+
+      return result;
+   }
+
 }

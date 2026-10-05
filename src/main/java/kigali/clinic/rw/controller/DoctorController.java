@@ -86,4 +86,12 @@ public class DoctorController {
 
       return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
+
+    @GetMapping (value = "/without-office", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> searchByNoOffice() {
+
+      List<Doctor> doctors = doctorService.searchByNoOffice();
+
+      return new ResponseEntity<>(doctors, HttpStatus.OK);
+    }
 }
