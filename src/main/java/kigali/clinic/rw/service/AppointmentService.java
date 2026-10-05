@@ -151,4 +151,11 @@ public class AppointmentService {
     return result;
    }
 
+   public int deleteAppointment(Date appDate) {
+
+    int result = appRepo.deleteAppointment(appDate);
+
+    return result;
+   }
+
 }

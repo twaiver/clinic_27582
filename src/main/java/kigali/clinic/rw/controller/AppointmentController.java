@@ -113,4 +113,12 @@ public class AppointmentController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @DeleteMapping (value = "/cancelled-before")
+    public ResponseEntity<?> cancelAppointment(@RequestParam ("date") Date appDate) {
+
+        int result = appoService.deleteAppointment(appDate);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }
