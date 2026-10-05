@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController 
-@RequestMapping (value = "/api/office")
+@RequestMapping (value = "/api/offices")
 public class OfficeController {
   
     @Autowired 
@@ -75,6 +75,22 @@ public class OfficeController {
         return new ResponseEntity<>(returnedMessage,HttpStatus.CREATED );
       } else {
         return new ResponseEntity<>("No Office available", HttpStatus.CREATED);
+      }
+      
+    }
+
+    @GetMapping (value="/busiest", produces = MediaType.APPLICATION_JSON_VALUE
+     )
+    public ResponseEntity<?> busiestOffice(){
+      
+      List<Object> returnedMessage =  officeService.busiestOffice();
+
+      if(returnedMessage.size() > 0) {
+      
+        return new ResponseEntity<>(returnedMessage,HttpStatus.CREATED );
+
+      } else {
+        return new ResponseEntity<>("No appointment yest", HttpStatus.CREATED);
       }
       
     }

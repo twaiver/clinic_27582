@@ -62,8 +62,14 @@ public class OfficeService {
    public List<Office> allOffice(){
 
       List<Office> getAllOffice = officeRepo.findAll();
+      
+      return getAllOffice;
+      
+   }
 
-      System.out.println(getAllOffice.size());
+   public List<Object> busiestOffice(){
+
+      List<Object> getAllOffice = officeRepo.busiestOffice();
       
       return getAllOffice;
       
