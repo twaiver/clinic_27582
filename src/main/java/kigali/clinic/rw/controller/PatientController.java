@@ -101,4 +101,13 @@ public class PatientController {
         return new ResponseEntity<>("The doctor with that id does not exist", HttpStatus.NOT_FOUND);
       }
     }
+
+
+    @GetMapping (value = "/frequent", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> frequentPatient(@RequestParam("min") int min) {
+
+      List<Patient> patients = patientService.frequentPatient(min);
+
+      return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
 }

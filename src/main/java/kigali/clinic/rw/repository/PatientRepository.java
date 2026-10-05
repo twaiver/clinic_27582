@@ -29,4 +29,7 @@ public interface PatientRepository extends JpaRepository<Patient,UUID> {
 
    @Query(value = "SELECT DISTINCT a.patient FROM Appointment a WHERE a.doctor = :doctor")
    List<Patient> searchByDoctor(@Param("doctor") Doctor doctor);
+
+   @Query (value = "SELECT p FROM Patient p JOIN p.appointments a GROUP BY p HAVING COUNT(a) > :minNumber ORDER BY COUNT(a) DESC")
+   List<Patient> frequentPatient(@Param("minNumber") int min);
 }

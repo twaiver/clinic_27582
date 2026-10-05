@@ -109,4 +109,12 @@ public class PatientService {
       return patients;
    }
 
+   public List<Patient> frequentPatient(int min) {
+
+      
+      List<Patient> patients = patientRepo.frequentPatient(min);
+
+      return patients;
+   }
+
 }
