@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kigali.clinic.rw.domain.Doctor;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController 
-@RequestMapping (value = "/api/doctor")
+@RequestMapping (value = "/api/doctors")
 public class DoctorController {
   
     @Autowired 
@@ -76,5 +77,13 @@ public class DoctorController {
         return new ResponseEntity<>("No Doctor available", HttpStatus.CREATED);
       }
       
+    }
+
+    @GetMapping (value = "/by-specialization", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> searchBySpecialization(@RequestParam("name") String name) {
+
+      List<Doctor> doctors = doctorService.searchBySpecialization(name);
+
+      return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
 }

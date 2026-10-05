@@ -33,6 +33,7 @@ public class DoctorService {
 
    }
 
+   
    public String deleteOneDoctor(UUID id) {
 
       boolean result = doctorRepo.existsById(id);
@@ -47,6 +48,8 @@ public class DoctorService {
       }
 
    }
+
+   
 
    public String updateDoctor(Doctor doctor, UUID id) {
 
@@ -85,6 +88,13 @@ public class DoctorService {
 
       return getAllOffice;
 
+   }
+
+   public List<Doctor> searchBySpecialization(String name) {
+
+      List<Doctor> result = doctorRepo.findBySpecializations(name);
+
+      return result;
    }
 
 }
