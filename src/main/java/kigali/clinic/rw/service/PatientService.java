@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import kigali.clinic.rw.domain.Doctor;
 import kigali.clinic.rw.domain.Patient;
 import kigali.clinic.rw.repository.PatientRepository;
 
@@ -92,6 +93,18 @@ public class PatientService {
    public List<Patient> searchByLastName(String lastName) {
 
       List<Patient> patients = patientRepo.findByLastNameIgnoreCaseOrderByFirstNameAsc(lastName);
+
+      return patients;
+   }
+
+
+   public List<Patient> searchByDoctor(UUID id) {
+
+      Doctor doc = new Doctor();
+      doc.setId(id);
+
+
+      List<Patient> patients = patientRepo.searchByDoctor(doc);
 
       return patients;
    }

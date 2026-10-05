@@ -86,4 +86,13 @@ public class PatientController {
 
       return new ResponseEntity<>(patients, HttpStatus.OK);
     }
+
+    @GetMapping (value = "/of-doctor/{doctorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> searchByDoctor(@PathVariable  UUID doctorId) {
+
+      List<Patient> patients = patientService.searchByDoctor(doctorId);
+
+
+      return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
 }

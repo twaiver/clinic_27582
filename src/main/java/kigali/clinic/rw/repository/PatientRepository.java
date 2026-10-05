@@ -7,8 +7,11 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import kigali.clinic.rw.domain.Appointment;
+import kigali.clinic.rw.domain.Doctor;
 import kigali.clinic.rw.domain.Patient;
 
 
@@ -24,6 +27,6 @@ public interface PatientRepository extends JpaRepository<Patient,UUID> {
 
    //  Patient findById(int officeNumber);
 
-    @Query (value = "SELECT o FROM Patient o")
-    List<Patient> findPatients();
+   @Query(value = "SELECT DISTINCT a.patient FROM Appointment a WHERE a.doctor = :doctor")
+   List<Patient> searchByDoctor(@Param("doctor") Doctor doctor);
 }
