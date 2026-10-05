@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import kigali.clinic.rw.domain.Appointment;
 import kigali.clinic.rw.domain.AppointmentDTO;
 import kigali.clinic.rw.domain.AppointmentStatus;
+import kigali.clinic.rw.domain.Doctor;
 import kigali.clinic.rw.repository.AppointmentRepository;
 
 @Service 
@@ -139,6 +140,15 @@ public class AppointmentService {
       List<Object> appointments = appRepo.appointmentsPerStatus();
 
       return appointments;
+   }
+
+   public int cancelAppointment(UUID doctorId, Date appDate) {
+
+    Doctor doc = new Doctor();
+    doc.setId(doctorId);
+    int result = appRepo.cancelAppointments(doc, appDate, AppointmentStatus.CANCELLED, AppointmentStatus.COMPLETED);
+
+    return result;
    }
 
 }

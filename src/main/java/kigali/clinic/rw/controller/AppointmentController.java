@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -102,6 +103,14 @@ public class AppointmentController {
         List<Object> appointments = appoService.appointmentsPerStatus();
 
         return new ResponseEntity<>(appointments, HttpStatus.OK);
+    }
+
+    @PatchMapping (value = "/cancel-day")
+    public ResponseEntity<?> cancelAppointment(@RequestParam ("doctorId") UUID doctorId, @RequestParam ("date") Date appDate) {
+
+        int result = appoService.cancelAppointment(doctorId, appDate);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }

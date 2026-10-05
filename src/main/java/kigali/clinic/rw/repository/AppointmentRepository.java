@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import kigali.clinic.rw.domain.Appointment;
 import kigali.clinic.rw.domain.AppointmentStatus;
@@ -30,5 +33,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
 
     @Query(value = "SELECT a.status, COUNT(a.patient) AS patientsCount FROM Appointment a GROUP BY a.status")
     List<Object> appointmentsPerStatus();
+
+    @Modifying 
+    @Transactional 
+    @Query (value = "UPDATE Appointment a SET a.status = :stat WHERE a.doctor = :doctor AND NOT a.status  = :notIn AND a.appointmentDate = :appointDate")
+    int cancelAppointments(@Param("doctor") Doctor doctor, @Param("appointDate") Date appDate, @Param("stat") AppointmentStatus status, @Param("notIn") AppointmentStatus notIn);
     
 }
