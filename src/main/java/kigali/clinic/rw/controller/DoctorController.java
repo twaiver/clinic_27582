@@ -16,6 +16,7 @@ import kigali.clinic.rw.service.DoctorService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -98,12 +99,41 @@ public class DoctorController {
     
     @PutMapping (value = "/{doctorId}/specializations/{specializationId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addSpecialization(@PathVariable UUID doctorId, @PathVariable UUID specializationId) {
-      
+
       String result = doctorService.addSpecializations(doctorId, specializationId);
 
       if(result.equals("Specialization added to the doctor")){
       return new ResponseEntity<>(result, HttpStatus.OK); 
       } else if(result.equals("The doctor already has that specialization")) {
+        return new ResponseEntity<>(result, HttpStatus.valueOf(409));
+      } else {
+        return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+      }
+    }
+
+    @DeleteMapping (value = "/{doctorId}/specializations/{specializationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> removeSpecialization(@PathVariable UUID doctorId, @PathVariable UUID specializationId) {
+      
+      String result = doctorService.removeSpecializations(doctorId, specializationId);
+
+      if(result.equals("Specialization removed from doctor")){
+      return new ResponseEntity<>(result, HttpStatus.OK); 
+      } else if(result.equals("The doctor does not have that specialization")) {
+        return new ResponseEntity<>(result, HttpStatus.valueOf(409));
+      } else {
+        return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+      }
+    }
+
+
+    @PatchMapping (value = "/{doctorId}/office", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> changeOffice(@PathVariable UUID doctorId, @RequestParam ("officeNumber") int officeNumber) {
+      
+      String result = doctorService.changeOffice(doctorId, officeNumber);
+
+      if(result.equals("Office changed successfully")){
+      return new ResponseEntity<>(result, HttpStatus.OK); 
+      } else if(result.equals("The office is already taken by other doctor")) {
         return new ResponseEntity<>(result, HttpStatus.valueOf(409));
       } else {
         return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);

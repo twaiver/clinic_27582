@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import kigali.clinic.rw.domain.Doctor;
+import kigali.clinic.rw.domain.Office;
 import kigali.clinic.rw.domain.Specialization;
 
 
@@ -40,4 +41,10 @@ public interface DoctorRepository extends JpaRepository<Doctor,UUID> {
     Specialization existsBySpecializationsId(@Param ("id") UUID specialization);
 
     boolean existsByIdAndSpecializationsId(UUID doctor, UUID specialization);
+
+    boolean existsByIdAndOffice(UUID doctor, Office office);
+
+    @Query (value = "SELECT o FROM Office o WHERE o.officeNumber = :officeNumber")
+    Office existsByOfficeNumber(@Param ("officeNumber") int office_number);
+    
 }

@@ -1,6 +1,5 @@
 package kigali.clinic.rw.service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kigali.clinic.rw.domain.Doctor;
+import kigali.clinic.rw.domain.Office;
 import kigali.clinic.rw.domain.Specialization;
 import kigali.clinic.rw.repository.DoctorRepository;
 import kigali.clinic.rw.repository.SpecializationRepository;
@@ -19,8 +19,8 @@ public class DoctorService {
 
    @Autowired
    private DoctorRepository doctorRepo;
-   
-   @Autowired 
+
+   @Autowired
    private SpecializationRepository specRepo;
 
    public String saveDoctor(Doctor doctor) {
@@ -125,7 +125,7 @@ public class DoctorService {
                return "The doctor already has that specialization";
 
             } else {
-               
+
                Set<Doctor> sendThis = isSpecializationAvailable.getDoctors();
                Doctor useThis = new Doctor();
                useThis.setId(doctor);
@@ -138,6 +138,69 @@ public class DoctorService {
             }
          } else {
             return "The specialization does not exist";
+         }
+      } else {
+         return "The doctor with that id does not exist";
+      }
+   }
+
+   public String removeSpecializations(UUID doctor, UUID specialization) {
+
+      Optional<Doctor> isDoctorAvailable = doctorRepo.findById(doctor);
+
+      boolean isDoctorHas = doctorRepo.existsByIdAndSpecializationsId(doctor, specialization);
+
+      Specialization isSpecializationAvailable = doctorRepo.existsBySpecializationsId(specialization);
+
+      if (!isDoctorAvailable.isEmpty()) {
+
+         if (isSpecializationAvailable != null) {
+
+            if (!isDoctorHas) {
+
+               return "The doctor does not have that specialization";
+
+            } else {
+
+               isSpecializationAvailable.getDoctors().remove(isDoctorAvailable.get());
+
+               specRepo.save(isSpecializationAvailable);
+
+               return "Specialization removed from doctor";
+            }
+         } else {
+            return "The specialization does not exist";
+         }
+      } else {
+         return "The doctor with that id does not exist";
+      }
+   }
+
+   public String changeOffice(UUID doctor, int officeNumber) {
+
+      Optional<Doctor> isDoctorAvailable = doctorRepo.findById(doctor);
+
+      Office isOfficeAvailable = doctorRepo.existsByOfficeNumber(officeNumber);
+
+      boolean isDoctorHas = doctorRepo.existsByIdAndOffice(doctor, isOfficeAvailable);
+
+      if (!isDoctorAvailable.isEmpty()) {
+
+         if (isOfficeAvailable != null) {
+
+            if (isDoctorHas) {
+
+               return "The office is already taken by other doctor";
+
+            } else {
+
+               isDoctorAvailable.get().setOffice(isOfficeAvailable);
+               doctorRepo.save(isDoctorAvailable.get());
+
+               return "Office changed successfully";
+            }
+         } else {
+            return "The office with that office number does not exist";
          }
       } else {
          return "The doctor with that id does not exist";

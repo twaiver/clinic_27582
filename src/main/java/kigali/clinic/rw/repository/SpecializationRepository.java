@@ -17,5 +17,7 @@ public interface  SpecializationRepository extends JpaRepository<Specialization,
     @Query (value = "SELECT s FROM Specialization s WHERE s.doctors is empty")
     List<Specialization> findByNobodyOffer();
 
+    int deleteByIdAndDoctorsId(UUID doctor, UUID specialization); 
+
     
 }

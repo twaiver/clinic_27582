@@ -94,4 +94,10 @@ public class OfficeController {
       }
       
     }
+
+    @GetMapping (value = "free", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> freeOffice() {
+      List<Office> result = officeService.freeOffice();
+      return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

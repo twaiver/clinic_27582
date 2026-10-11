@@ -75,6 +75,14 @@ public class OfficeService {
       
    }
 
+   public List<Office> freeOffice(){
+
+      List<Office> getAllOffice = officeRepo.freeOffice();
+      
+      return getAllOffice;
+      
+   }
+
 
 
 }
