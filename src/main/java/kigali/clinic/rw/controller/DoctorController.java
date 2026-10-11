@@ -94,4 +94,21 @@ public class DoctorController {
 
       return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
+
+    
+    @PutMapping (value = "/{doctorId}/specializations/{specializationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addSpecialization(@PathVariable UUID doctorId, @PathVariable UUID specializationId) {
+      
+      String result = doctorService.addSpecializations(doctorId, specializationId);
+
+      if(result.equals("Specialization added to the doctor")){
+      return new ResponseEntity<>(result, HttpStatus.OK); 
+      } else if(result.equals("The doctor already has that specialization")) {
+        return new ResponseEntity<>(result, HttpStatus.valueOf(409));
+      } else {
+        return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+      }
+    }
+
+    
 }

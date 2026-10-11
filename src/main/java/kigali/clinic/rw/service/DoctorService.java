@@ -1,20 +1,27 @@
 package kigali.clinic.rw.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kigali.clinic.rw.domain.Doctor;
+import kigali.clinic.rw.domain.Specialization;
 import kigali.clinic.rw.repository.DoctorRepository;
+import kigali.clinic.rw.repository.SpecializationRepository;
 
 @Service
 public class DoctorService {
 
    @Autowired
    private DoctorRepository doctorRepo;
+   
+   @Autowired 
+   private SpecializationRepository specRepo;
 
    public String saveDoctor(Doctor doctor) {
       try {
@@ -33,7 +40,6 @@ public class DoctorService {
 
    }
 
-   
    public String deleteOneDoctor(UUID id) {
 
       boolean result = doctorRepo.existsById(id);
@@ -48,8 +54,6 @@ public class DoctorService {
       }
 
    }
-
-   
 
    public String updateDoctor(Doctor doctor, UUID id) {
 
@@ -68,7 +72,7 @@ public class DoctorService {
             send.setDateOfBirth(doctor.getDateOfBirth());
 
             doctorRepo.save(send);
-            
+
             return "Doctor updated";
 
          } else {
@@ -76,7 +80,7 @@ public class DoctorService {
             return "we don't have Doctor with that name ";
          }
       } catch (Exception e) {
-         
+
          return "Failed to update the doctor";
       }
 
@@ -102,6 +106,42 @@ public class DoctorService {
       List<Doctor> result = doctorRepo.findByNoOffice();
 
       return result;
+   }
+
+   public String addSpecializations(UUID doctor, UUID specialization) {
+
+      Optional<Doctor> isDoctorAvailable = doctorRepo.findById(doctor);
+
+      boolean isDoctorHas = doctorRepo.existsByIdAndSpecializationsId(doctor, specialization);
+
+      Specialization isSpecializationAvailable = doctorRepo.existsBySpecializationsId(specialization);
+
+      if (!isDoctorAvailable.isEmpty()) {
+
+         if (isSpecializationAvailable != null) {
+
+            if (isDoctorHas) {
+
+               return "The doctor already has that specialization";
+
+            } else {
+               
+               Set<Doctor> sendThis = isSpecializationAvailable.getDoctors();
+               Doctor useThis = new Doctor();
+               useThis.setId(doctor);
+               sendThis.add(useThis);
+               isSpecializationAvailable.setDoctors(sendThis);
+
+               specRepo.save(isSpecializationAvailable);
+
+               return "Specialization added to the doctor";
+            }
+         } else {
+            return "The specialization does not exist";
+         }
+      } else {
+         return "The doctor with that id does not exist";
+      }
    }
 
 }

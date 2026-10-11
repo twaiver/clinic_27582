@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import kigali.clinic.rw.domain.Doctor;
+import kigali.clinic.rw.domain.Specialization;
 
 
 @Repository 
@@ -33,4 +34,10 @@ public interface DoctorRepository extends JpaRepository<Doctor,UUID> {
 
     @Query(value = "SELECT d FROM Doctor d WHERE d.office is null")
     List<Doctor> findByNoOffice();
+
+
+    @Query (value = "SELECT s FROM Specialization s WHERE s.id = :id")
+    Specialization existsBySpecializationsId(@Param ("id") UUID specialization);
+
+    boolean existsByIdAndSpecializationsId(UUID doctor, UUID specialization);
 }
