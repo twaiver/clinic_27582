@@ -1,12 +1,11 @@
 package kigali.clinic.rw.service;
 
-
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,30 +20,35 @@ import kigali.clinic.rw.domain.AppointmentStatus;
 import kigali.clinic.rw.domain.Doctor;
 import kigali.clinic.rw.repository.AppointmentRepository;
 
-@Service 
+@Service
 public class AppointmentService {
 
-    @Autowired 
+    @Autowired
     private AppointmentRepository appRepo;
 
     public String saveAppointment(Appointment appointment) {
 
+        LocalDate isBefore = appointment.getAppointmentDate().toLocalDate();
+        if (isBefore.isBefore(LocalDate.now())) {
+            return "Appointment date cannot be in past";
+        } else {
 
-        AppointmentStatus sendThis = AppointmentStatus.CANCELLED;
+            AppointmentStatus sendThis = AppointmentStatus.CANCELLED;
 
-            
+            boolean result = appRepo.existsByDoctorAndStatusNotAndAppointmentDate(appointment.getDoctor(), sendThis,
+                    appointment.getAppointmentDate());
 
-            boolean result = appRepo.existsByDoctorAndStatusNotAndAppointmentDate(appointment.getDoctor(), sendThis, appointment.getAppointmentDate());
-
-            if(!result) {
-
-            appRepo.save(appointment);
-            return "The appointment saved successfully";
+            if (!result) {
+                appointment.setStatus(AppointmentStatus.SCHEDULED);
+                appRepo.save(appointment);
+                return "The appointment saved successfully";
 
             } else {
                 return "Doctor is already booked on that date";
             }
-        
+
+        }
+
     }
 
     public String updateAppointment(Appointment appointment, UUID id) {
@@ -52,7 +56,7 @@ public class AppointmentService {
         try {
             boolean result = appRepo.existsById(id);
 
-            if(result) {
+            if (result) {
 
                 Optional<Appointment> app = appRepo.findById(id);
 
@@ -70,11 +74,11 @@ public class AppointmentService {
         }
     }
 
-    public String deleteAppointment(UUID id){
+    public String deleteAppointment(UUID id) {
         try {
             boolean result = appRepo.existsById(id);
 
-            if(result) {
+            if (result) {
                 appRepo.deleteById(id);
                 return "Appointment deleted";
             } else {
@@ -95,27 +99,24 @@ public class AppointmentService {
 
         AppointmentStatus status = AppointmentStatus.SCHEDULED;
 
-
         List<Appointment> result = appRepo.findByDoctorIdAndStatusOrderByAppointmentDateAsc(id, status);
-
 
         return result;
     }
 
     public List<AppointmentDTO> allExpiredAppointment() {
 
-
         AppointmentStatus status = AppointmentStatus.SCHEDULED;
-
 
         Long mills = System.currentTimeMillis();
         Date today = new Date(mills);
         System.out.println(today);
-        List<Appointment> result = appRepo.findByAppointmentDateLessThanAndStatusOrderByAppointmentDateAsc(today, status);
+        List<Appointment> result = appRepo.findByAppointmentDateLessThanAndStatusOrderByAppointmentDateAsc(today,
+                status);
 
         List<AppointmentDTO> ne = new ArrayList<>();
 
-        for(Appointment c: result) {
+        for (Appointment c : result) {
             AppointmentDTO dec = new AppointmentDTO();
             dec.setAppointmentDate(c.getAppointmentDate());
             dec.setDoctorName(c.getDoctor().getFirstName() + " " + c.getDoctor().getLastName());
@@ -128,49 +129,105 @@ public class AppointmentService {
 
     public List<Appointment> searchByStatus(AppointmentStatus status) {
 
-      List<Appointment> appointments = appRepo.findByStatusOrderByAppointmentDateAsc(status);
+        List<Appointment> appointments = appRepo.findByStatusOrderByAppointmentDateAsc(status);
 
-      return appointments;
-   }
+        return appointments;
+    }
 
-   public List<Appointment> searchByRange(Date start, Date end) {
+    public List<Appointment> searchByRange(Date start, Date end) {
 
-      List<Appointment> appointments = appRepo.findByAppointmentDateBetween(start, end);
+        List<Appointment> appointments = appRepo.findByAppointmentDateBetween(start, end);
 
-      return appointments;
-   }
+        return appointments;
+    }
 
-   public List<Object> appointmentsPerStatus() {
+    public List<Object> appointmentsPerStatus() {
 
-      List<Object> appointments = appRepo.appointmentsPerStatus();
+        List<Object> appointments = appRepo.appointmentsPerStatus();
 
-      return appointments;
-   }
+        return appointments;
+    }
 
-   public int cancelAppointment(UUID doctorId, Date appDate) {
+    public int cancelAppointment(UUID doctorId, Date appDate) {
 
-    Doctor doc = new Doctor();
-    doc.setId(doctorId);
-    int result = appRepo.cancelAppointments(doc, appDate, AppointmentStatus.CANCELLED, AppointmentStatus.COMPLETED);
+        Doctor doc = new Doctor();
+        doc.setId(doctorId);
+        int result = appRepo.cancelAppointments(doc, appDate, AppointmentStatus.CANCELLED, AppointmentStatus.COMPLETED);
 
-    return result;
-   }
+        return result;
+    }
 
-   public Page<Appointment> getPaging(int page, int size, String sort) {
+    public Page<Appointment> getPaging(int page, int size, String sort) {
 
-    Pageable sendThis = PageRequest.of(page, size, Sort.by(sort).descending());
+        Pageable sendThis = PageRequest.of(page, size, Sort.by(sort).descending());
 
-    
-    Page<Appointment> result = appRepo.findAll(sendThis);
+        Page<Appointment> result = appRepo.findAll(sendThis);
 
-    return result;
-   }
+        return result;
+    }
 
-   public int deleteAppointment(Date appDate) {
+    public int deleteAppointment(Date appDate) {
 
-    int result = appRepo.deleteAppointment(appDate);
+        int result = appRepo.deleteAppointment(appDate);
 
-    return result;
-   }
+        return result;
+    }
+
+    public String changeStatus(UUID id, AppointmentStatus status) {
+        Optional<Appointment> app = appRepo.findById(id);
+        if (app.isEmpty()) {
+            return "The appointment with that id is does not exist";
+        } else {
+
+            if (app.get().getStatus().equals(AppointmentStatus.SCHEDULED)
+                    && !(status.equals(AppointmentStatus.CANCELLED) || status.equals(AppointmentStatus.CONFIRMED))) {
+                return "Cannot change status from " + app.get().getStatus() + " to " + status;
+            } else if (app.get().getStatus().equals(AppointmentStatus.CONFIRMED)
+                    && !(status.equals(AppointmentStatus.CANCELLED) || status.equals(AppointmentStatus.COMPLETED))) {
+                return "Cannot change status from " + app.get().getStatus() + " to " + status;
+            } else if (app.get().getStatus().equals(AppointmentStatus.COMPLETED)
+                    || app.get().getStatus().equals(AppointmentStatus.CANCELLED)) {
+                return "Cannot change status from " + app.get().getStatus() + " to " + status;
+            } else {
+
+                app.get().setStatus(status);
+                appRepo.save(app.get());
+
+                return "Appointment status updated successfully";
+            }
+
+        }
+    }
+
+    public String reschangeAppointment(Date newDate, UUID id) {
+
+        LocalDate isBefore = newDate.toLocalDate();
+
+        if (isBefore.isBefore(LocalDate.now())) {
+            return "Appointment date cannot be in the past";
+        } else {
+            Optional<Appointment> app = appRepo.findById(id);
+            if (app.isEmpty()) {
+                return "the id does not exist";
+            } else {
+
+                if (app.get().getStatus().equals(AppointmentStatus.COMPLETED)
+                        || app.get().getStatus().equals(AppointmentStatus.CANCELLED)) {
+                    return "" + app.get().getStatus() + " appointment cannot rescheduled";
+                } else {
+                    boolean result = appRepo.existsByDoctorAndStatusNotAndStatusNotAndAppointmentDate(
+                            app.get().getDoctor(), AppointmentStatus.CANCELLED, AppointmentStatus.CONFIRMED, newDate);
+                    if (result) {
+                        return "Doctor is already booked on that day";
+                    } else {
+                        app.get().setAppointmentDate(newDate);
+                        app.get().setStatus(AppointmentStatus.SCHEDULED);
+                        appRepo.save(app.get());
+                        return "Appointment rescheduled successfully";
+                    }
+                }
+            }
+        }
+    }
 
 }

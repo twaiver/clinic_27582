@@ -39,6 +39,8 @@ public class AppointmentController {
 
         if (result.equals("The appointment saved successfully")) {
             return new ResponseEntity<>(result, HttpStatus.CREATED);
+        } else if(result.equals("Appointment date cannot be in past")){
+            return new ResponseEntity<>(result, HttpStatus.valueOf(400));
         } else {
             return new ResponseEntity<>(result, HttpStatus.CONFLICT);
         }
@@ -128,6 +130,34 @@ public class AppointmentController {
         Page<Appointment> result = appoService.getPaging(page, size, sort);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PatchMapping (value = "/{id}/status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> changeStatus(@PathVariable UUID id, @RequestParam ("status") AppointmentStatus status) {
+
+        String result = appoService.changeStatus(id, status);
+        if(result.equals("Appointment status updated successfully")) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else if(result.equals("The appointment with that id is does not exist")) {
+            return new ResponseEntity<>(result, HttpStatus.valueOf(404));
+        } else {
+            return new ResponseEntity<>(result, HttpStatus.valueOf(400));
+        }
+        
+    }
+
+    @PatchMapping (value = "/{id}/reschedule", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> rescheduleAppointment(@PathVariable UUID id, @RequestParam ("newDate") Date newDate) {
+
+        String result = appoService.reschangeAppointment(newDate, id);
+        if(result.equals("Appointment status updated successfully")) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else if(result.equals("Appointment date cannot be in the past")){
+            return new ResponseEntity<>(result, HttpStatus.valueOf(400));
+        } else {
+            return new ResponseEntity<>(result, HttpStatus.valueOf(404));
+        }
+        
     }
 
 }

@@ -44,5 +44,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     @Transactional 
     @Query (value = "DELETE FROM Appointment a WHERE a.status = 'CANCELLED' AND a.appointmentDate < :appointDate")
     int deleteAppointment(@Param ("appointDate") Date appointDate);
+
+    boolean existsByDoctorAndStatusNotAndStatusNotAndAppointmentDate(Doctor doctor, AppointmentStatus statusOne, AppointmentStatus statusTwo, Date newDate);
     
 }
