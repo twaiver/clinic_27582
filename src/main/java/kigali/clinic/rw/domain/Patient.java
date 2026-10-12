@@ -34,6 +34,9 @@ public class Patient {
     @Column (name="date_of_birth")
     private Date dateOfBirth;
 
+    @Column (name = "ss_number")
+    private String ssNumber;
+
     @OneToMany (mappedBy = "patient", fetch = FetchType.LAZY)
     @JsonIgnore 
     private List<Appointment> appointments = new ArrayList<>();
@@ -72,6 +75,14 @@ public class Patient {
 
     public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
+    }
+
+    public void setSsNumber(String ssNumber) {
+        this.ssNumber = ssNumber;
+    }
+
+    public String getSsNumber() {
+        return ssNumber;
     }
 
     
